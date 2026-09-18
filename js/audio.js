@@ -1,0 +1,8 @@
+class AudioManager {
+  constructor(){this.sound=true;this.music=false;this.ctx=null;this.loop=null;this.step=0;}
+  context(){if(!this.ctx)this.ctx=new (window.AudioContext||window.webkitAudioContext)(); if(this.ctx.state==='suspended')this.ctx.resume();return this.ctx;}
+  tone(freq,duration=.12,type='sine',volume=.06,delay=0){if(!this.sound)return;try{const c=this.context(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime+delay;o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(volume,t+.012);g.gain.exponentialRampToValueAtTime(.001,t+duration);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+duration+.02);}catch{}}
+  play(name){const notes={button:[[520,.07]],correct:[[620,.1],[830,.14,.1]],wrong:[[240,.16],[180,.18,.09]],attack:[[310,.12],[440,.18,.1]],hurt:[[160,.18]],combo:[[660,.1],[880,.12,.1],[1050,.17,.2]],super:[[480,.08],[700,.1,.08],[980,.13,.16],[1320,.24,.27]],win:[[523,.14],[659,.14,.14],[784,.14,.28],[1047,.35,.43]],count:[[440,.1]],go:[[660,.1],[990,.24,.12]]};for(const [f,d,delay=0] of notes[name]||[])this.tone(f,d,name==='hurt'||name==='wrong'?'triangle':'sine',.065,delay);}
+  startMusic(){if(this.loop)clearInterval(this.loop);if(!this.music)return;this.loop=setInterval(()=>{if(!this.music)return;try{const c=this.context(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime;o.type='triangle';o.frequency.value=[131,165,196,165,147,165,220,196][this.step++%8];g.gain.setValueAtTime(.013,t);g.gain.exponentialRampToValueAtTime(.001,t+.17);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+.18);}catch{}},270);}
+  stopMusic(){clearInterval(this.loop);this.loop=null;}
+}
