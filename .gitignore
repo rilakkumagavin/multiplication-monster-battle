@@ -1,0 +1,4 @@
+# 本機移轉壓縮包由原始檔重新產生，不重複存進 Git。
+*.zip
+.DS_Store
+Thumbs.db
